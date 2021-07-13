@@ -4,7 +4,7 @@ local win = DiscordLib:Window("XqHub")
 
 local serv = win:Server("Hubs", "")
 
-local btns = serv:Channel("Best Hubs")
+local btns = serv:Channel("Hubs")
 
 btns:Button("DarkHub", function()
 loadstring(game:HttpGet("https://raw.githubusercontent.com/RandomAdamYT/DarkHub/master/Init", true))()
@@ -330,6 +330,6 @@ print("XqHub killed!")
 end)
 
 serv:Channel("by discord.gg/xq")
+serv:Channel("by los3r#6666")
 
-
-win:Server("Main", "http://www.roblox.com/asset/?id=6031075938")
+win:Server("Comming Soon", "http://www.roblox.com/asset/?id=6031075938")
