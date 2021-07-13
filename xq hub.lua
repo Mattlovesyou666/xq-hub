@@ -86,91 +86,7 @@ end)
 
 local btns = serv:Channel("Addons")
 btns:Button("Shaders", function()
---||THIS SCRIPT WORKS THE BEST WHEN THE GRAPHIC SETTING IS MAXED OUT AND LOWENDPC SETTING SET TO 0||--
- 
---||SETTINGS||--
-local TIME = 3 --||1 for day, 2 for sunset, 3 for night.||--
-local LOW_END_PC = 0 --||1 for Low End PCs, 0 for Medium, High End PCs.||--
-local FULL_CLEAN_LIGHTING = 1 --||WARNING: 0 = disabled, 1 = enabled, this removes every instance from the Lighting Service, may break some games!||--
- 
- 
---||DON'T TOUCH ANYTHING BELOW||--
-local Lighting = game:GetService("Lighting")
- 
-local Effects =
-	{
-		"BloomEffect",
-		"ColorCorrectionEffect",
-		"DepthOfFieldEffect",
-		"SunRaysEffect",
-		"BlurEffect"
-	}
- 
---||CLEANS THE LIGHTING SERVICE||--
-if FULL_CLEAN_LIGHTING == 0 then
-	for _, v in pairs(Lighting:GetChildren()) do
-		if v.ClassName ==  Effects[1] or v.ClassName == Effects[2] or v.ClassName == Effects[3] or v.ClassName == Effects[4] or v.ClassName == Effects[5] then
-			v:Destroy()
-		else
-			print(string.format(v.Name.." isn't a lighting effect! \nClassName: "..v.ClassName, "%d"))
-		end
-	end
-elseif FULL_CLEAN_LIGHTING == 1 then
-	for _, v in pairs(Lighting:GetChildren()) do
-		v:Destroy()
-	end
-	warn("FULL_CLEAN_LIGHTING ENABLED!")
-end
- 
---||INSERTING NEW LIGHTING EFFECTS||--
-local Bloom = Instance.new(Effects[1])
-local ColorCorrection = Instance.new(Effects[2])
-local DepthOfField = Instance.new(Effects[3])
-local SunRays = Instance.new(Effects[4])	
- 
-if LOW_END_PC == 1 then
-	warn("LOW_END_PC ENABLED")
-	DepthOfField:Destroy()
-	SunRays:Destroy()
-end
- 
-Bloom.Enabled = true
-Bloom.Parent = Lighting
-Bloom.Intensity = 1
-Bloom.Size = 56
-Bloom.Threshold = 1.667
- 
-ColorCorrection.Enabled = true
-ColorCorrection.Parent = Lighting
-ColorCorrection.Brightness = 0
-ColorCorrection.Contrast = -0.1
-ColorCorrection.Saturation = 0.2
-ColorCorrection.TintColor = Color3.fromRGB(255, 255, 255)
- 
-if LOW_END_PC ~= 1 then
-	DepthOfField.Enabled = true
-	DepthOfField.Parent = Lighting
-	DepthOfField.FarIntensity = 0.375
-	DepthOfField.FocusDistance = 0.05
-	DepthOfField.InFocusRadius = 10
-	DepthOfField.NearIntensity = 0.343
- 
-	SunRays.Enabled = true
-	SunRays.Parent = Lighting
-	SunRays.Intensity = 0.523
-	SunRays.Spread = 1
-end
- 
-if TIME == 1 then
-	Lighting.ClockTime = 14
-	Bloom.Threshold = 1.667
-elseif TIME == 2 then
-	Lighting.ClockTime = 17
-	Bloom.Threshold = 1.667
-elseif TIME == 3 then
-	Lighting.ClockTime = 0
-	Bloom.Threshold = 1
-end
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Mattlovesyou666/xq-hub/main/better%20gra"))()
 DiscordLib:Notification("Notification", "Shaders Enabled!", "Okay!")
 end)
 
@@ -179,6 +95,15 @@ btns:Seperator()
 btns:Button("CmdX", function()
 loadstring(game:HttpGet("https://raw.githubusercontent.com/CMD-X/CMD-X/master/Source", true))()
 DiscordLib:Notification("Notification", "CmdX Executed!", "Okay!")
+end)
+
+
+
+
+btns:Seperator()
+btns:Button("Flip", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Mattlovesyou666/xq-hub/main/flip", true))()
+DiscordLib:Notification("Notification", "Flip Executed!", "Okay!")
 end)
 
 btns:Seperator()
@@ -196,172 +121,7 @@ end)
 
 btns:Seperator()
 btns:Button("Emotes", function()
-	local httpService = game:GetService('HttpService')
-	local categories = game:HttpGet('https://catalog.roblox.com/v1/categories')
-	local animationCategory = httpService:JSONDecode(categories).AvatarAnimations
-	local subCategory = game:HttpGet('https://catalog.roblox.com/v1/subcategories')
-	local emoteCategory = httpService:JSONDecode(subCategory).EmoteAnimations
-	
-	local emotesTable = {}
-	local cursor = ''
-	local animsTable = httpService:JSONDecode(game:HttpGet('https://pastebin.com/raw/XppaAPF7'))
-	
-	local animsTableNames = {}
-	for name in pairs(animsTable) do
-		table.insert(animsTableNames, name)
-	end
-	
-	while true do
-		local requestString = ('https://catalog.roblox.com/v1/search/items/details?Category=%s&Subcategory=%s&IncludeNotForSale=true&Limit=30&Cursor=%s'):format(
-			animationCategory, emoteCategory, cursor
-		)
-		local response = httpService:JSONDecode(game:HttpGet(requestString))
-		cursor = response.nextPageCursor
-		
-		for _, data in ipairs(response.data) do
-			table.insert(emotesTable, {
-				data.name,
-				data.id
-			})
-		end
-	
-		if not cursor then
-			break
-		end
-	end
-	
-	table.sort(emotesTable, function(a, b)
-		return a[1] < b[1]
-	end)
-	
-	table.sort(animsTableNames)
-	
-	local robloxEmotes = {}
-	local emoteNames = {}
-	
-	for _, emote in ipairs(emotesTable) do
-		table.insert(emoteNames, emote[1])
-		robloxEmotes[emote[1]] = { emote[2] }
-	end
-	
-	local library = loadstring(game:HttpGet('https://raw.githubusercontent.com/Vzurxy/Scripts/main/uwuware_ui.lua'))()
-	local plr = game:GetService('Players').LocalPlayer
-	local character = plr.Character
-	local humanoid = character:WaitForChild('Humanoid', 5) or character:FindFirstChildWhichIsA('Humanoid')
-	local currentEmotes = {}
-	local selectedEmotes = currentEmotes
-	
-	if not humanoid then
-		return
-	end
-	
-	local function updateCurrentEmotes()
-		local description = humanoid.HumanoidDescription
-		local emotes = description:GetEquippedEmotes()
-		
-		currentEmotes = {}
-		selectedEmotes = {}
-		
-		for _, data in ipairs(emotes) do
-			table.insert(currentEmotes, data.Name)
-		end
-		
-		selectedEmotes = currentEmotes
-		humanoid.HumanoidDescription:SetEmotes(robloxEmotes)
-	end
-	
-	local function updateAnimations()
-		local animation = animsTable[library.flags.anim]
-		local animate = character:WaitForChild('Animate', 5) or character:FindFirstChild('Animate', true)
-	
-		if not animate then return end
-	
-		local swimIdle = false
-	
-		for anim, data in pairs(animation) do
-			for idx, id in ipairs(data) do
-				local obj = animate:WaitForChild(anim, 5)
-				if not obj then return end
-				if anim == 'idle' then
-					obj:WaitForChild('Animation' .. idx).AnimationId = id
-				elseif anim == 'swim' then
-					if not swimIdle then
-						obj:WaitForChild('Swim').AnimationId = id
-						swimIdle = true
-					else
-						animate:WaitForChild('swimidle').SwimIdle.AnimationId = id
-					end
-				else
-					local parsed = anim:gsub('^.', anim.upper)
-					obj:WaitForChild(parsed .. 'Anim').AnimationId = id
-				end
-			end
-		end
-	end
-	
-	pcall(updateCurrentEmotes)
-	
-	plr.CharacterAdded:Connect(function(newCharacter)
-		character = newCharacter
-		humanoid = newCharacter:WaitForChild('Humanoid', 5) or newCharacter:FindFirstChildWhichIsA('Humanoid')
-		
-		humanoid.HumanoidDescription:SetEmotes(robloxEmotes)
-		humanoid.HumanoidDescription:SetEquippedEmotes(selectedEmotes)
-		
-		pcall(updateAnimations)
-	end)
-	
-	local window = library:CreateWindow('Roblox Emotes') do
-		local emotes = window:AddFolder('Emotes') do
-			for number = 1, 8 do
-				emotes:AddList({
-					text = ('Emote %s'):format(number),
-					flag = ('emote%s'):format(number),
-					value = currentEmotes[number],
-					values = emoteNames,
-					callback = function(selectedEmote)
-						selectedEmotes[number] = selectedEmote
-					end
-				})
-			end
-			emotes:AddButton({
-				text = 'Apply Emotes',
-				flag = 'emote',
-				callback = function()
-					humanoid.HumanoidDescription:SetEquippedEmotes(selectedEmotes)
-				end
-			})
-		end
-		local animations = window:AddFolder('Animations') do
-			
-			local defaultValue = 'Mocap' do
-				local animate = character:WaitForChild('Animate', 5) or character:FindFirstChild('Animate', true)
-				if not animate then return end
-				local walkAnim = animate:FindFirstChild('WalkAnim', true)
-				
-				if walkAnim then
-					local assetInfo = game:GetService('MarketplaceService'):GetProductInfo(walkAnim.AnimationId:match('%d+'))
-					defaultValue = assetInfo.Name:split(' ')[1]
-				end
-			end
-			
-			animations:AddList({
-				text = 'Character Animation',
-				flag = 'anim',
-				value = 'Mocap',
-				values = animsTableNames
-			})
-			animations:AddButton({
-				text = 'Apply Animation',
-				flag = 'animapply',
-				callback = function()
-					pcall(updateAnimations)
-				end
-			})
-		end
-	end
-	
-	library:Init()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Mattlovesyou666/xq-hub/main/emiotes"))()
 DiscordLib:Notification("Notification", "Emotes Executed!", "Okay!")
 end)
 
@@ -397,24 +157,7 @@ end)
 btns:Seperator()
 
 btns:Button("Fe Building", function()
-_G.CheckCustomBuilds = true
-_G.DefaulBuilds = true
-_G.Barrier = true
-_G.bridge2 = true
-_G.bridge4 = true
-_G.ladder = true
-_G.Nazi = true
-_G.penis = true
-_G.platform = true
-_G.stairs = true
-_G.BigPP = true
-	
-_G.RGB = false
-_G.RGBswitchDelay = .4
-	
-_G.RejoinWaitDelayForReExecute = 5  -- tell how long the script will wait before rejoining (for synapse script queing)
-	
-loadstring(game:HttpGet("https://ssbtools.netlify.app/assets/storage/LOADSTRING_SCRIPT2.txt"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Mattlovesyou666/xq-hub/main/fe%20bui"))()
 DiscordLib:Notification("Notification", "Fe Building Executed!", "Okay!")
 end)
 
@@ -519,7 +262,7 @@ end)
 btns:Seperator()
 btns:Button("Soda Champions", function()
 loadstring(game:HttpGet("https://raw.githubusercontent.com/6ua/Void/main/SodaChampions"))()
-DiscordLib:Notification("Notification", "Script For Soda Champions  Executed!", "Okay!")
+DiscordLib:Notification("Notification", "Script For Soda Champions Executed!", "Okay!")
 end)
 
 
@@ -531,11 +274,53 @@ DiscordLib:Notification("Notification", "Script For Murder Mystery Executed!", "
 end)
 
 
+btns:Seperator()
+btns:Button("AimBlox", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/zzerexx/scripts/main/AimbloxSilentAim.lua", true))()
+DiscordLib:Notification("Notification", "Script For aimblox Executed!", "Okay!")
+end)
+
+
+
+btns:Seperator()
+btns:Button("Aimblox(better)", function()
+while wait(0.55) do
+	game:GetService("ReplicatedStorage").Remotes.HitLobbyTarget:FireServer()
+	end
+DiscordLib:Notification("Notification", "Script For Aimblox Executed!", "Okay!")
+end)
 
 
 
 
+btns:Seperator()
+btns:Button("Arcade Empire", function()
+loadstring(game:HttpGet("http://void-scripts.com/Scripts/arcadeEmpire.lua"))()
+DiscordLib:Notification("Notification", "Script For Arcade Empire Executed!", "Okay!")
+end)
 
+
+btns:Seperator()
+btns:Button("Boss Brawl", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/xunniez/Simulator/main/BossBrawlScript", true))()
+DiscordLib:Notification("Notification", "Script For Boss Brawl Executed!", "Okay!")
+end)
+
+
+
+btns:Seperator()
+btns:Button("Boxing League", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/yogurtsss/trashs-scripts-obfuscated/main/Boxing%20League", true))()
+DiscordLib:Notification("Notification", "Script For Boxing League Executed!", "Okay!")
+end)
+
+
+
+btns:Seperator()
+btns:Button("Mortem Metalioum", function()
+loadstring(game:HttpGet("https://risa.gq/Samuel/Mortem.txt"))()
+DiscordLib:Notification("Notification", "Script For Mortem Executed!", "Okay!")
+end)
 
 
 local bnds = serv:Channel("Binds")
