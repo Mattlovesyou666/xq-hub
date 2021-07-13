@@ -2,7 +2,7 @@ local DiscordLib = loadstring(game:HttpGet"https://raw.githubusercontent.com/daw
 
 local win = DiscordLib:Window("XqHub")
 
-local serv = win:Server("Hubs", "")
+local serv = win:Server("Main", "")
 
 local btns = serv:Channel("Hubs")
 
