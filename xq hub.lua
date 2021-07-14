@@ -2,9 +2,9 @@ local DiscordLib = loadstring(game:HttpGet"https://raw.githubusercontent.com/daw
 
 local win = DiscordLib:Window("XqHub")
 
-local serv = win:Server("Main", "")
+local serv = win:Server("Hubs", "")
 
-local btns = serv:Channel("Hubs")
+local btns = serv:Channel("Main")
 
 btns:Button("DarkHub", function()
 loadstring(game:HttpGet("https://raw.githubusercontent.com/RandomAdamYT/DarkHub/master/Init", true))()
@@ -186,9 +186,9 @@ end)
 btns:Seperator()
 btns:Button("DaHood(better)", function()
 repeat
-	wait();
-until game:IsLoaded();
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Compwnter/legacygui/main/.lua"))();
+wait()
+until game:IsLoaded()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/0nly6Ex/krypt/main/loader"))()
 DiscordLib:Notification("Notification", "Script For DaHood Executed!", "Okay!")
 end)
 
